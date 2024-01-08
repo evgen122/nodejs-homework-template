@@ -18,7 +18,14 @@ authRouter.post(
   "/register",
   isEmptyBody,
   validateBody(userSignupSchema),
-  authController.signup
+  authController.register
+);
+
+authRouter.post(
+  "/login",
+  isEmptyBody,
+  validateBody(userSignupSchema),
+  authController.login
 );
 
 export default authRouter;
