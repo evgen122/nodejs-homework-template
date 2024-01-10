@@ -43,8 +43,6 @@ const login = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
-  //   console.log(JWT_SECRET
-
   const {_id: id} = user;
   const payload = {
     id,
@@ -52,10 +50,25 @@ const login = async (req, res) => {
 
   const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "23h"});
 
-  res.json({token});
+  res.json({
+    token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
+  });
+};
+
+const getCurrent = async (req, res) => {
+  const {email, subscription} = req.user;
+  res.json({
+    email,
+    subscription,
+  });
 };
 
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+  getCurrent: ctrlWrapper(getCurrent),
 };

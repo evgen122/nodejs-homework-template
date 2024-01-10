@@ -3,6 +3,7 @@ import express from "express";
 import authController from "../../controllers/auth-controller.js";
 
 import {
+  authenticate,
   isEmptyBody,
   isEmptyBodyFavorite,
   isValidId,
@@ -27,5 +28,7 @@ authRouter.post(
   validateBody(userSignupSchema),
   authController.login
 );
+
+authRouter.get("/current", authenticate, authController.getCurrent);
 
 export default authRouter;
