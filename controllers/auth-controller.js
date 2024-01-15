@@ -3,12 +3,17 @@ import jwt from "jsonwebtoken";
 
 import "dotenv/config";
 
+import path from "path";
+import fs from "fs/promises";
+
 import User from "../models/User.js";
 
 import {HttpError} from "../helpers/index.js";
 import {ctrlWrapper} from "../decorators/index.js";
 
 const {JWT_SECRET} = process.env;
+
+const avatarsPath = path.resolve("public", "avatars");
 
 const register = async (req, res) => {
   const {email, password} = req.body;
@@ -17,9 +22,21 @@ const register = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
+  // console.log(req.file);
+
+  const {path: oldPath, filename} = req.file;
+  const newPath = path.join(avatarsPath, filename);
+  console.log(newPath);
+  await fs.rename(oldPath, newPath);
+  const avatarURL = path.join("avatars", filename);
+
   const hashPassword = await bcrypt.hash(password, 10);
 
-  const newUser = await User.create({...req.body, password: hashPassword});
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
 
   res.status("201");
   res.json({
