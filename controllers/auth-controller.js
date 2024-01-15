@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 import "dotenv/config";
 
@@ -22,13 +23,13 @@ const register = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
-  // console.log(req.file);
+  const avatarURL = gravatar.url(email, {s: "200"});
 
-  const {path: oldPath, filename} = req.file;
-  const newPath = path.join(avatarsPath, filename);
-  console.log(newPath);
-  await fs.rename(oldPath, newPath);
-  const avatarURL = path.join("avatars", filename);
+  // const {path: oldPath, filename} = req.file;
+  // const newPath = path.join(avatarsPath, filename);
+  // console.log(newPath);
+  // await fs.rename(oldPath, newPath);
+  // const avatarURL = path.join("avatars", filename);
 
   const hashPassword = await bcrypt.hash(password, 10);
 
