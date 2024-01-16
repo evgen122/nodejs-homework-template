@@ -26,12 +26,6 @@ const register = async (req, res) => {
 
   const avatarURL = gravatar.url(email, {s: "250"});
 
-  // const {path: oldPath, filename} = req.file;
-  // const newPath = path.join(avatarsPath, filename);
-  // console.log(newPath);
-  // await fs.rename(oldPath, newPath);
-  // const avatarURL = path.join("avatars", filename);
-
   const hashPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({
@@ -101,9 +95,15 @@ const logout = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const {_id} = req.user;
-
   const {path: oldPath, filename} = req.file;
   const newPath = path.join(avatarsPath, filename);
+
+  Jimp.read(oldPath, (err, lenna) => {
+    if (err) throw err;
+    lenna
+      .resize(250, 250) // resize
+      .write(newPath); // save
+  });
 
   fs.rename(oldPath, newPath);
   const avatarURL = path.join("avatars", filename);

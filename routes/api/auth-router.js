@@ -24,16 +24,13 @@ authRouter.post(
   authController.login
 );
 
-// ================================
 authRouter.patch(
   "/avatars",
   upload.single("avatar"),
   authenticate,
-  // isEmptyBody,
   validateBody(userUpdateAvatarSchema),
   authController.updateAvatar
 );
-// ================================
 
 authRouter.get("/current", authenticate, authController.getCurrent);
 
