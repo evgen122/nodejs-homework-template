@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
+import Jimp from "jimp";
 
 import "dotenv/config";
 
@@ -103,7 +104,14 @@ const updateAvatar = async (req, res) => {
 
   const {path: oldPath, filename} = req.file;
   const newPath = path.join(avatarsPath, filename);
-  console.log(newPath);
+
+  Jimp.read(oldPath, (err, avatar) => {
+    if (err) throw err;
+    avatar
+      .resize(250, 250) // resize
+      .write(oldPath); // save
+  });
+
   await fs.rename(oldPath, newPath);
   const avatarURL = path.join("avatars", filename);
 
