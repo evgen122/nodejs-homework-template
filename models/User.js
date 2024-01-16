@@ -44,6 +44,12 @@ export const userSigninSchema = Joi.object({
   subscription: Joi.string(),
 });
 
+export const userUpdateAvatarSchema = Joi.object({
+  // avatar: Joi.any()
+  //   .required()
+  //   .messages({"any.required": "missing field avatar"}),
+});
+
 const User = model("user", userSchema);
 
 export default User;
