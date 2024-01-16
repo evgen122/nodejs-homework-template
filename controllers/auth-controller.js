@@ -24,7 +24,7 @@ const register = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
-  const avatarURL = gravatar.url(email, {s: "200"});
+  const avatarURL = gravatar.url(email, {s: "250"});
 
   // const {path: oldPath, filename} = req.file;
   // const newPath = path.join(avatarsPath, filename);
@@ -105,14 +105,7 @@ const updateAvatar = async (req, res) => {
   const {path: oldPath, filename} = req.file;
   const newPath = path.join(avatarsPath, filename);
 
-  Jimp.read(oldPath, (err, avatar) => {
-    if (err) throw err;
-    avatar
-      .resize(250, 250) // resize
-      .write(oldPath); // save
-  });
-
-  await fs.rename(oldPath, newPath);
+  fs.rename(oldPath, newPath);
   const avatarURL = path.join("avatars", filename);
 
   await User.findByIdAndUpdate(_id, {avatarURL: avatarURL});
