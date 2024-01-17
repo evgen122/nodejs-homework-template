@@ -94,15 +94,21 @@ const logout = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
+  if (!req.file) {
+    throw HttpError(400, "the new avatar was not transferred");
+  }
+
   const {_id} = req.user;
   const {path: oldPath, filename} = req.file;
+
   const newPath = path.join(avatarsPath, filename);
 
-  Jimp.read(oldPath, (err, lenna) => {
-    if (err) throw err;
-    lenna
-      .resize(250, 250) // resize
-      .write(newPath); // save
+  Jimp.read(oldPath, (err, avatar) => {
+    if (err) {
+      throw err;
+    }
+    avatar.resize(250, 250); // resize
+    avatar.write(newPath); // save
   });
 
   fs.rename(oldPath, newPath);
