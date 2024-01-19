@@ -17,6 +17,7 @@ const userSchema = new Schema(
       required: [true, "Email is required"],
       unique: true,
     },
+    avatarURL: String,
     subscription: {
       type: String,
       enum: ["starter", "pro", "business"],
@@ -42,6 +43,8 @@ export const userSigninSchema = Joi.object({
   password: Joi.string().required(),
   subscription: Joi.string(),
 });
+
+export const userUpdateAvatarSchema = Joi.object({});
 
 const User = model("user", userSchema);
 
