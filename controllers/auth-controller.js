@@ -8,12 +8,14 @@ import "dotenv/config";
 import path from "path";
 import fs from "fs/promises";
 
+import {nanoid} from "nanoid";
+
 import User from "../models/User.js";
 
-import {HttpError} from "../helpers/index.js";
+import {HttpError, sendEmail} from "../helpers/index.js";
 import {ctrlWrapper} from "../decorators/index.js";
 
-const {JWT_SECRET} = process.env;
+const {JWT_SECRET, BASE_URL} = process.env;
 
 const avatarsPath = path.resolve("public", "avatars");
 
@@ -26,13 +28,23 @@ const register = async (req, res) => {
 
   const avatarURL = gravatar.url(email, {s: "250"});
 
+  const verificationToken = nanoid();
   const hashPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
+    verificationToken,
     avatarURL,
   });
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target="_blank" href="${BASE_URL}/api/users/auth/verify/${verificationToken}">Click  to verify email</a>`,
+  };
+
+  await sendEmail(verifyEmail);
 
   res.status("201");
   res.json({
