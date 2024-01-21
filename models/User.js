@@ -32,15 +32,15 @@ const userSchema = new Schema(
     },
     verificationToken: {
       type: String,
-      // required: [true, "Verify token is required"],
+      required: [true, "Verify token is required"],
     },
   },
   {versionKey: false, timestamps: true}
 );
 
 userSchema.post("save", handleSaveError);
-userSchema.pre("findOneAndUpdate", setUpdateSettings);
-userSchema.post("findOneAndUpdate", handleSaveError);
+userSchema.pre("findByIdAndUpdate", setUpdateSettings);
+userSchema.post("findByIdAndUpdate", handleSaveError);
 
 export const userSignupSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
